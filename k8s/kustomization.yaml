@@ -1,0 +1,29 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+# Namespace (optional)
+# namespace: youtube-remote
+
+# Common labels
+commonLabels:
+  app.kubernetes.io/name: youtube-remote
+  app.kubernetes.io/version: "1.0"
+  app.kubernetes.io/component: mcp-server
+
+# Resources
+resources:
+- configmap.yaml
+- persistentvolume.yaml
+- deployment.yaml
+- service.yaml
+
+# Images (can be overridden for different environments)
+images:
+- name: youtube-remote
+  newTag: latest
+
+# ConfigMap generator (optional)
+# configMapGenerator:
+# - name: youtube-remote-config
+#   literals:
+#   - LOG_LEVEL=INFO

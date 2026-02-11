@@ -1,0 +1,4 @@
+.venv
+*.pyc
+youtube-remote/__pycache__
+.DS_Store

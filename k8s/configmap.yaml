@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: youtube-remote-config
+  labels:
+    app: youtube-remote
+data:
+  log_level: "INFO"
+  # Add additional configuration here as needed

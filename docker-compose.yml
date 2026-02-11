@@ -1,0 +1,55 @@
+version: '3.8'
+
+services:
+  youtube-remote:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: youtube-remote:latest
+    container_name: youtube-remote-mcp
+
+    # Run in interactive mode for MCP stdio communication
+    stdin_open: true
+    tty: true
+
+    # Restart policy
+    restart: unless-stopped
+
+    # Mount configuration directory for persistence
+    volumes:
+      - youtube-config:/home/ytremote/.config/youtube-remote
+      # Optional: Mount for development (comment out for production)
+      # - ./youtube-remote:/app/youtube-remote:ro
+
+    # Environment variables (customize as needed)
+    environment:
+      - PYTHONUNBUFFERED=1
+      - LOG_LEVEL=INFO
+
+    # Resource limits (adjust based on your needs)
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+
+    # Security options
+    security_opt:
+      - no-new-privileges:true
+
+    # Read-only root filesystem (except for config volume)
+    # read_only: true
+
+    # Logging configuration
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+volumes:
+  youtube-config:
+    driver: local

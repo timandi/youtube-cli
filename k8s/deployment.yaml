@@ -1,0 +1,107 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: youtube-remote-mcp
+  labels:
+    app: youtube-remote
+    component: mcp-server
+spec:
+  replicas: 1  # Single instance for stateful MCP server
+  selector:
+    matchLabels:
+      app: youtube-remote
+      component: mcp-server
+  strategy:
+    type: Recreate  # Ensure only one instance runs at a time
+  template:
+    metadata:
+      labels:
+        app: youtube-remote
+        component: mcp-server
+    spec:
+      # Security context for the pod
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+
+      containers:
+      - name: youtube-remote
+        image: youtube-remote:latest
+        imagePullPolicy: IfNotPresent
+
+        # Security context for the container
+        securityContext:
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: false  # Set to true if app doesn't need write access
+          capabilities:
+            drop:
+            - ALL
+
+        # Environment variables
+        env:
+        - name: PYTHONUNBUFFERED
+          value: "1"
+        - name: LOG_LEVEL
+          valueFrom:
+            configMapKeyRef:
+              name: youtube-remote-config
+              key: log_level
+              optional: true
+
+        # Resource limits
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+
+        # Volume mounts
+        volumeMounts:
+        - name: config
+          mountPath: /home/ytremote/.config/youtube-remote
+
+        # Health checks
+        livenessProbe:
+          exec:
+            command:
+            - python
+            - -c
+            - "from remote import YouTubeRemote; import sys; sys.exit(0)"
+          initialDelaySeconds: 10
+          periodSeconds: 30
+          timeoutSeconds: 10
+          failureThreshold: 3
+
+        readinessProbe:
+          exec:
+            command:
+            - python
+            - -c
+            - "from remote import YouTubeRemote; import sys; sys.exit(0)"
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          timeoutSeconds: 5
+
+        # Stdin/TTY for MCP stdio communication
+        stdin: true
+        tty: true
+
+      # Volumes
+      volumes:
+      - name: config
+        persistentVolumeClaim:
+          claimName: youtube-remote-config-pvc
+
+      # Node selector (optional - uncomment if needed)
+      # nodeSelector:
+      #   kubernetes.io/os: linux
+
+      # Tolerations (optional)
+      # tolerations:
+      # - key: "node-role.kubernetes.io/master"
+      #   operator: "Exists"
+      #   effect: "NoSchedule"

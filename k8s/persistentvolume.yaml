@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: youtube-remote-config-pvc
+  labels:
+    app: youtube-remote
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  # Storage class (adjust based on your cluster)
+  # storageClassName: standard
+---
+# Optional: PersistentVolume for local development
+# Uncomment for local/on-premise deployments
+# apiVersion: v1
+# kind: PersistentVolume
+# metadata:
+#   name: youtube-remote-config-pv
+#   labels:
+#     type: local
+# spec:
+#   storageClassName: manual
+#   capacity:
+#     storage: 1Gi
+#   accessModes:
+#   - ReadWriteOnce
+#   hostPath:
+#     path: "/mnt/data/youtube-remote"
+#     type: DirectoryOrCreate

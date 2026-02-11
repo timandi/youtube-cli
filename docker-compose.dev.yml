@@ -1,0 +1,38 @@
+version: '3.8'
+
+# Development override for docker-compose
+# Usage: docker-compose -f docker-compose.yml -f docker-compose.dev.yml up
+
+services:
+  youtube-remote:
+    # Build from local Dockerfile for development
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: builder  # Use builder stage for development tools
+
+    # Mount source code for live reloading
+    volumes:
+      - youtube-config:/home/ytremote/.config/youtube-remote
+      - ./youtube-remote:/app/youtube-remote:ro
+      - ./requirements.txt:/app/requirements.txt:ro
+
+    # Override environment for development
+    environment:
+      - PYTHONUNBUFFERED=1
+      - LOG_LEVEL=DEBUG
+      - PYTHONDONTWRITEBYTECODE=1
+
+    # Remove resource limits for development
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 2G
+
+    # Override command for development (optional)
+    # command: python server.py
+
+    # Add development tools (optional)
+    # entrypoint: ["/bin/bash", "-c"]
+    # command: ["pip install ipdb pytest && python server.py"]
