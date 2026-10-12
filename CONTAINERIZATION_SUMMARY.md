@@ -9,41 +9,42 @@ Your YouTube CLI application has been successfully containerized with production
 ### Core Docker Files
 
 1. **Dockerfile** - Multi-stage production-ready build
+
    - Base image: Python 3.13-slim (Debian Trixie)
    - Multi-stage build for minimal image size
    - Non-root user (`ytremote` with UID 1000)
    - Security hardening and best practices
    - Health checks included
    - Final image size: **326MB**
-
 2. **.dockerignore** - Excludes unnecessary files from build context
+
    - Virtual environments
    - Git files
    - IDE configurations
    - Documentation (except README)
-
 3. **docker-compose.yml** - Orchestration for local development
+
    - Persistent volume for YouTube TV pairing configuration
    - Resource limits (512MB RAM, 0.5 CPU)
    - Security options enabled
    - Logging configuration
-
 4. **docker-compose.dev.yml** - Development override
+
    - Source code mounting for live reloading
    - Debug environment variables
    - Increased resource limits
-
 5. **.env.example** - Environment configuration template
 
 ### Documentation
 
 6. **DOCKER.md** - Comprehensive Docker usage guide
+
    - Quick start instructions
    - MCP client integration (Claude Desktop)
    - Troubleshooting guide
    - Production deployment tips
-
 7. **Makefile** - Convenient Docker commands
+
    - `make build` - Build image
    - `make run` - Start with docker-compose
    - `make logs` - View logs
@@ -54,30 +55,31 @@ Your YouTube CLI application has been successfully containerized with production
 ### Kubernetes Deployment
 
 8. **k8s/deployment.yaml** - Kubernetes deployment manifest
+
    - Single replica (stateful MCP server)
    - Security context (non-root, no privileges)
    - Resource limits and requests
    - Health probes (liveness and readiness)
    - Persistent volume mount
-
 9. **k8s/service.yaml** - ClusterIP service
+
    - Session affinity for stateful connections
    - Port 8080 exposure
-
 10. **k8s/persistentvolume.yaml** - Storage configuration
+
     - 1Gi persistent volume claim
     - ReadWriteOnce access mode
-
 11. **k8s/configmap.yaml** - Configuration management
+
     - Environment variables
     - LOG_LEVEL configuration
-
 12. **k8s/kustomization.yaml** - Kustomize configuration
+
     - Base configuration
     - Common labels
     - Image management
-
 13. **k8s/README.md** - Kubernetes deployment guide
+
     - Deployment instructions
     - Monitoring and troubleshooting
     - Security configurations
@@ -238,19 +240,20 @@ youtube-cli/
 ## Next Steps
 
 1. **Test Locally**
+
    ```bash
    make build && make run
    ```
-
 2. **Pair with TV**
+
    - Get pairing code from TV
    - Use MCP `pair_tv` tool
-
 3. **Deploy to Production**
+
    - Push image to registry: `make push REGISTRY=your-registry.com`
    - Deploy to Kubernetes: `kubectl apply -k k8s/`
-
 4. **Monitor**
+
    - View logs: `make logs` or `kubectl logs -f deployment/youtube-remote-mcp`
    - Check health: Container health check runs every 30s
 
@@ -264,6 +267,7 @@ youtube-cli/
 ## Support
 
 For issues or questions:
+
 - Docker problems: Check `DOCKER.md` troubleshooting section
 - Kubernetes issues: Check `k8s/README.md` troubleshooting section
 - Application bugs: Check application logs

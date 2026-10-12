@@ -60,12 +60,14 @@ cp .env.example .env
 ```
 
 Available environment variables:
+
 - `PYTHONUNBUFFERED=1` - Enable real-time Python output
 - `LOG_LEVEL` - Set logging level (DEBUG, INFO, WARNING, ERROR)
 
 ### Volumes
 
 The container uses a named volume to persist configuration:
+
 - `youtube-config` - Stores YouTube TV pairing data at `/home/ytremote/.config/youtube-remote`
 
 ## Usage with MCP Clients
@@ -127,6 +129,7 @@ docker build \
 ### Security Hardening
 
 The Dockerfile includes several security features:
+
 - ✅ Multi-stage build to minimize image size
 - ✅ Non-root user (`ytremote` with UID 1000)
 - ✅ No new privileges security option
@@ -151,6 +154,7 @@ deploy:
 ### Container won't start
 
 Check logs:
+
 ```bash
 docker-compose logs youtube-remote
 ```
@@ -159,6 +163,7 @@ docker-compose logs youtube-remote
 
 1. Ensure the config volume has proper permissions
 2. Remove old config and re-pair:
+
 ```bash
 docker volume rm youtube-config
 docker-compose up -d
@@ -167,6 +172,7 @@ docker-compose up -d
 ### Health check failing
 
 Test manually:
+
 ```bash
 docker exec youtube-remote python -c "from remote import YouTubeRemote; print('OK')"
 ```
@@ -177,6 +183,7 @@ docker exec youtube-remote python -c "from remote import YouTubeRemote; print('O
 
 1. Update `requirements.txt`
 2. Rebuild the image:
+
 ```bash
 docker-compose build --no-cache
 ```
@@ -184,6 +191,7 @@ docker-compose build --no-cache
 ### Clean Up
 
 Remove all containers, images, and volumes:
+
 ```bash
 docker-compose down -v
 docker rmi youtube-remote:latest
@@ -198,6 +206,7 @@ See `k8s/` directory for Kubernetes deployment manifests.
 ### Custom Logging
 
 Mount a custom logging configuration:
+
 ```bash
 docker run -it \
   -v $(pwd)/logging.conf:/app/logging.conf \
@@ -208,6 +217,7 @@ docker run -it \
 ### Debugging
 
 Run with shell access:
+
 ```bash
 docker run -it --rm \
   -v youtube-config:/home/ytremote/.config/youtube-remote \

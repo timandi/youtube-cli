@@ -103,12 +103,14 @@ kubectl delete -k k8s/
 ## 🐛 Troubleshooting
 
 ### Container won't start
+
 ```bash
 make logs                # Check logs
 docker images            # Verify image exists
 ```
 
 ### Need to rebuild from scratch
+
 ```bash
 make clean              # Clean everything
 make build-no-cache     # Build without cache
@@ -116,11 +118,13 @@ make run
 ```
 
 ### Check image size
+
 ```bash
 make size
 ```
 
 ### Security scan
+
 ```bash
 make scan              # Requires trivy installed
 ```
